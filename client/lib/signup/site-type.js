@@ -14,17 +14,32 @@ import { find, get } from 'lodash';
  *
  * @example
  * // Find the site type where `id === 2`, and return the value of `slug`
+	
+	should this not be something like:
+		getSiteTypePropertyValue( { id: 2 }, property ) 
+	?
+
  * const siteTypeValue = getSiteTypePropertyValue( 'id', 2, 'slug' );
  *
  * @param {string} key A property name of a site types item
  * @param {string|number} value The value of `key` with which to filter items
- * @param {string} property The name of the property whose value you wish to return
+ * @param {string} property/path The name of, or path to, the property whose value you wish to return
  * @param {array} siteTypes (optional) A site type collection
  * @return {(string|int)?} value of `property` or `null` if none is found
  */
 export function getSiteTypePropertyValue( key, value, property, siteTypes = getAllSiteTypes() ) {
 	const siteTypeProperties = find( siteTypes, { [ key ]: value } );
 	return get( siteTypeProperties, property, null );
+}
+
+/**
+ * Looks up site types array for item match and returns a copy item for the given key
+ * // Full docs if we agree to this approach
+ */
+export function getCopyForSiteType( siteTypeMatcher, copyItemKey, siteTypes = getAllSiteTypes() ) {
+	const siteTypeProperties = find( siteTypes, siteTypeMatcher ) || {};
+
+	return get( siteTypeProperties.copy, copyItemKey, '' );
 }
 
 /**
@@ -38,56 +53,65 @@ export function getSiteTypePropertyValue( key, value, property, siteTypes = getA
  * @return {array} current list of site types
  */
 export function getAllSiteTypes() {
+	// should we memo this? It's not dynamic, we only function it up because of translations
 	return [
 		{
 			id: 2, // This value must correspond with its sibling in the /segments API results
 			slug: 'blog',
-			label: i18n.translate( 'Blog' ),
-			description: i18n.translate( 'Share and discuss ideas, updates, or creations.' ),
 			theme: 'pub/independent-publisher-2',
 			designType: 'blog',
-			siteTitleLabel: i18n.translate( 'What would you like to call your blog?' ),
-			siteTitlePlaceholder: i18n.translate( "E.g., Stevie's blog " ),
-			siteTopicHeader: i18n.translate( 'What is your blog about?' ),
-			siteTopicLabel: i18n.translate( 'What will your blog be about?' ),
+			copy: {
+				label: i18n.translate( 'Blog' ),
+				description: i18n.translate( 'Share and discuss ideas, updates, or creations.' ),
+				siteTitleLabel: i18n.translate( 'What would you like to call your blog?' ),
+				siteTitlePlaceholder: i18n.translate( "E.g., Stevie's blog " ),
+				siteTopicHeader: i18n.translate( 'What is your blog about?' ),
+				siteTopicLabel: i18n.translate( 'What will your blog be about?' ),
+			},
 		},
 		{
 			id: 1, // This value must correspond with its sibling in the /segments API results
 			slug: 'business',
-			label: i18n.translate( 'Business' ),
-			description: i18n.translate( 'Promote products and services.' ),
 			theme: 'pub/professional-business',
 			designType: 'page',
-			siteTitleLabel: i18n.translate( 'What is the name of your business?' ),
-			siteTitlePlaceholder: i18n.translate( 'E.g., Vail Renovations' ),
-			siteTopicHeader: i18n.translate( 'What does your business do?' ),
-			siteTopicLabel: i18n.translate( 'What type of business do you have?' ),
 			customerType: 'business',
+			copy: {
+				label: i18n.translate( 'Business' ),
+				description: i18n.translate( 'Promote products and services.' ),
+				siteTitleLabel: i18n.translate( 'What is the name of your business?' ),
+				siteTitlePlaceholder: i18n.translate( 'E.g., Vail Renovations' ),
+				siteTopicHeader: i18n.translate( 'What does your business do?' ),
+				siteTopicLabel: i18n.translate( 'What type of business do you have?' ),
+			},
 		},
 		{
 			id: 4, // This value must correspond with its sibling in the /segments API results
 			slug: 'professional',
-			label: i18n.translate( 'Professional' ),
-			description: i18n.translate( 'Showcase your portfolio and work.' ),
 			theme: 'pub/altofocus',
 			designType: 'portfolio',
-			siteTitleLabel: i18n.translate( 'What is your name?' ),
-			siteTitlePlaceholder: i18n.translate( 'E.g., John Appleseed' ),
-			siteTopicHeader: i18n.translate( 'What type of work do you do?' ),
-			siteTopicLabel: i18n.translate( 'What type of work do you do?' ),
+			copy: {
+				label: i18n.translate( 'Professional' ),
+				description: i18n.translate( 'Showcase your portfolio and work.' ),
+				siteTitleLabel: i18n.translate( 'What is your name?' ),
+				siteTitlePlaceholder: i18n.translate( 'E.g., John Appleseed' ),
+				siteTopicHeader: i18n.translate( 'What type of work do you do?' ),
+				siteTopicLabel: i18n.translate( 'What type of work do you do?' ),
+			},
 		},
 		{
 			id: 3, // This value must correspond with its sibling in the /segments API results
 			slug: 'online-store',
-			label: i18n.translate( 'Online store' ),
-			description: i18n.translate( 'Sell your collection of products online.' ),
 			theme: 'pub/dara',
 			designType: 'store',
-			siteTitleLabel: i18n.translate( 'What is the name of your store?' ),
-			siteTitlePlaceholder: i18n.translate( "E.g., Mel's Diner" ),
-			siteTopicHeader: i18n.translate( 'What type of products do you sell?' ),
-			siteTopicLabel: i18n.translate( 'What type of products do you sell?' ),
 			customerType: 'business',
+			copy: {
+				label: i18n.translate( 'Online store' ),
+				description: i18n.translate( 'Sell your collection of products online.' ),
+				siteTitleLabel: i18n.translate( 'What is the name of your store?' ),
+				siteTitlePlaceholder: i18n.translate( "E.g., Mel's Diner" ),
+				siteTopicHeader: i18n.translate( 'What type of products do you sell?' ),
+				siteTopicLabel: i18n.translate( 'What type of products do you sell?' ),
+			},
 		},
 	];
 }
